@@ -76,7 +76,6 @@ module.exports.getEmployeesByManager = function (manager) {
             }
         }
         if (employeesTemp.length == 0) {
-            console.log("ERROR");
             reject("no results returned");
         } else {
             resolve(employeesTemp); // call "resolve" because we have completed the function successfully

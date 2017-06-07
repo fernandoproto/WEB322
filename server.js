@@ -14,7 +14,7 @@ var express = require("express");
 var app = express();
 var path = require("path");
 
-var HTTP_PORT = process.env.PORT || 8080;
+var HTTP_PORT = process.env.PORT || 8081;
 
 function onHttpStart() {
     console.log("Express http server listening on: " + HTTP_PORT);
@@ -81,6 +81,8 @@ app.get("/departments", (req, res) => {
     });
 });
 
+
+app.use(express.static('public'));	
 
 app.use((req, res) => {
     res.status(404).send("Page Not Found");
