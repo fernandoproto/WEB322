@@ -1,6 +1,7 @@
 const fs = require('fs');
 var employees = [];
 var departments = [];
+var empCount = 0;
 
 module.exports.initialize = function () {
     return new Promise((resolve, reject) => {
@@ -18,6 +19,7 @@ module.exports.initialize = function () {
                 if (employees.length == 0 || departments.length == 0)
                     reject("Unable to read file");
                 else
+                    empCount = employees.length; 
                     resolve();
             });
         });
@@ -56,7 +58,7 @@ module.exports.getEmployeesByDepartment = function (department) {
     return new Promise((resolve, reject) => {
         for (var i = 0; i < employees.length; i++) {
             if (employees[i].department == department) {
-                employeesTemp.push(employees[i])
+                employeesTemp.push(employees[i]);
             }
         }
         if (employeesTemp.length == 0) {
@@ -71,8 +73,8 @@ module.exports.getEmployeesByManager = function (manager) {
     var employeesTemp = [];
     return new Promise((resolve, reject) => {
         for (var i = 0; i < employees.length; i++) {
-            if (employees[i].manager == manager) {
-                employeesTemp.push(employees[i])
+            if (employees[i].employeeManagerNum == manager) {
+                employeesTemp.push(employees[i]);
             }
         }
         if (employeesTemp.length == 0) {
@@ -125,3 +127,24 @@ module.exports.getDepartments = function () {
         }
     });
 }
+
+module.exports.addEmployee = function (employeeData){
+     return new Promise((resolve, reject) => {
+        empCount++;
+        employeeData.employeeNum = empCount;
+        employees.push(employeeData);
+        resolve();
+     });
+}
+
+module.exports.updateEmployee = function (employeeData) {
+    return new Promise((resolve, reject) => {
+        for (var i = 0; i < employees.length; i++) {
+            if (employees[i].employeeNum  == employeeData.employeeNum) {
+                employees[i] = employeeData;
+                break;
+            }      
+        }
+        resolve();       
+    });
+} 
