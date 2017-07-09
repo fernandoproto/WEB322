@@ -1,150 +1,274 @@
-const fs = require('fs');
-var employees = [];
-var departments = [];
-var empCount = 0;
+const Sequelize = require('sequelize');
+var sequelize = new Sequelize('ddlgg60p2csr72', 'wfbykelnrbqfsp', '120e5055818073c10873ae8de53e491c68d9c7d735425cd4bfc2480227326257', {
+    host: 'ec2-54-163-252-55.compute-1.amazonaws.com',
+    dialect: 'postgres',
+    port: 5432,
+    dialectOptions: {
+        ssl: true
+    }
+});
+
+var Employee = sequelize.define('Employee', {
+    employeeNum: {
+        type: Sequelize.INTEGER,
+        primaryKey: true,
+        autoIncrement: true
+    },
+    firstName: Sequelize.STRING,
+    last_name: Sequelize.STRING,
+    email: Sequelize.STRING,
+    SSN: Sequelize.STRING,
+    addressStreet: Sequelize.STRING,
+    addresCity: Sequelize.STRING,
+    addressState: Sequelize.STRING,
+    addressPostal: Sequelize.STRING,
+    maritalStatus: Sequelize.STRING,
+    isManager: Sequelize.BOOLEAN,
+    employeeManagerNum: Sequelize.INTEGER,
+    status: Sequelize.STRING,
+    department: Sequelize.INTEGER,
+    hireDate: Sequelize.STRING
+});
+
+var Department = sequelize.define('Department', {
+    departmentId: {
+        type: Sequelize.INTEGER,
+        primaryKey: true,
+        autoIncrement: true
+    },
+    departmentName: Sequelize.STRING
+});
 
 module.exports.initialize = function () {
-    return new Promise((resolve, reject) => {
-        fs.readFile('./data/employees.json', (err, data) => {
-            if (err)
-                reject(err);
-            else
-                employees = JSON.parse(data);
-
-            fs.readFile('./data/departments.json', (err, data) => {
-                if (err)
-                    reject(err);
-                else
-                    departments = JSON.parse(data);
-                if (employees.length == 0 || departments.length == 0)
-                    reject("Unable to read file");
-                else
-                    empCount = employees.length; 
-                    resolve();
-            });
+    return new Promise(function (resolve, reject) {
+        sequelize.sync().then(function (Employee) {
+            console.log('Connection has been established successfully.');
+            resolve();
+        }).then(function (Department) {
+            console.log('Connection has been established successfully.');
+            resolve();
+        }).catch(function (err) {
+            reject("unable to sync the database");
         });
     });
 };
 
 
 module.exports.getAllEmployees = function () {
-    return new Promise((resolve, reject) => { // place our code inside a "Promise" function
-        if (employees.length == 0) {
-            reject("no results returned");
-        } else {
-            resolve(employees); // call "resolve" because we have completed the function successfully
-        }
+    return new Promise(function (resolve, reject) {
+        Employee.findAll()
+            .then(function (data) {
+                resolve(data);
+            })
+            .catch(function (err) {
+                reject("no results returned");
+            });
     });
 }
 
 module.exports.getEmployeesByStatus = function (status) {
-    var employeesTemp = [];
-    return new Promise((resolve, reject) => {
-        for (var i = 0; i < employees.length; i++) {
-            if (employees[i].status == status) {
-                employeesTemp.push(employees[i])
-            }
-        }
-        if (employeesTemp.length == 0) {
+    return new Promise(function (resolve, reject) {
+        Employee.findAll({
+            where: { status: status }
+        }).then(function (data) {
+            resolve(data);
+        }).catch(function (err) {
             reject("no results returned");
-        } else {
-            resolve(employeesTemp); // call "resolve" because we have completed the function successfully
-        }
+        });
     });
 }
 
 module.exports.getEmployeesByDepartment = function (department) {
-    var employeesTemp = [];
-    return new Promise((resolve, reject) => {
-        for (var i = 0; i < employees.length; i++) {
-            if (employees[i].department == department) {
-                employeesTemp.push(employees[i]);
-            }
-        }
-        if (employeesTemp.length == 0) {
+    return new Promise(function (resolve, reject) {
+        Employee.findAll({
+            where: { department: department }
+        }).then(function (data) {
+            resolve(data);
+        }).catch(function (err) {
             reject("no results returned");
-        } else {
-            resolve(employeesTemp); // call "resolve" because we have completed the function successfully
-        }
+        });
     });
 }
 
 module.exports.getEmployeesByManager = function (manager) {
-    var employeesTemp = [];
-    return new Promise((resolve, reject) => {
-        for (var i = 0; i < employees.length; i++) {
-            if (employees[i].employeeManagerNum == manager) {
-                employeesTemp.push(employees[i]);
-            }
-        }
-        if (employeesTemp.length == 0) {
+    return new Promise(function (resolve, reject) {
+        Employee.findAll({
+            where: { employeeManagerNum: manager }
+        }).then(function (data) {
+            resolve(data);
+        }).catch(function (err) {
             reject("no results returned");
-        } else {
-            resolve(employeesTemp); // call "resolve" because we have completed the function successfully
-        }
+        });
     });
 }
 
 module.exports.getEmployeeByNum = function (num) {
-    var employeesTemp = "";
-    return new Promise((resolve, reject) => {
-        for (var i = 0; i < employees.length; i++) {
-            if (employees[i].employeeNum == num) {
-                employeesTemp = employees[i];
-                break;
-            }
-        }
-        if (employeesTemp == "") {
+    return new Promise(function (resolve, reject) {
+        Employee.findAll({
+            where: { employeeNum: num }
+        }).then(function (data) {
+            resolve(data[0]);
+        }).catch(function (err) {
             reject("no results returned");
-        } else {
-            resolve(employeesTemp); // call "resolve" because we have completed the function successfully
-        }
+        });
     });
 }
 
 module.exports.getManagers = function () {
-    var employeesTemp = [];
-    return new Promise((resolve, reject) => {
-        for (var i = 0; i < employees.length; i++) {
-            if (employees[i].isManager == true) {
-                employeesTemp.push(employees[i])
-            }
-        }
-        if (employeesTemp.length == 0) {
+    return new Promise(function (resolve, reject) {
+        Employee.findAll({
+            where: { isManager: true }
+        }).then(function (data) {
+            resolve(data);
+        }).catch(function (err) {
             reject("no results returned");
-        } else {
-            resolve(employeesTemp); // call "resolve" because we have completed the function successfully
-        }
+        });
     });
 }
 
 module.exports.getDepartments = function () {
-    return new Promise((resolve, reject) => { // place our code inside a "Promise" function
-        if (departments.length == 0) {
-            reject("no results returned");
-        } else {
-            resolve(departments); // call "resolve" because we have completed the function successfully
-        }
+    return new Promise(function (resolve, reject) {
+        Department.findAll()
+            .then(function (data) {
+                resolve(data);
+            })
+            .catch(function (err) {
+                reject("no results returned");
+            });
     });
 }
 
-module.exports.addEmployee = function (employeeData){
-     return new Promise((resolve, reject) => {
-        empCount++;
-        employeeData.employeeNum = empCount;
-        employees.push(employeeData);
-        resolve();
-     });
+module.exports.addEmployee = function (employeeData) {
+    employeeData.isManager = (employeeData.isManager) ? true : false;
+
+    return new Promise(function (resolve, reject) {
+        for (var prop in employeeData) {
+            if (employeeData[prop] == "") {
+                employeeData[prop] = null;
+            }
+        }
+        Employee.create({
+            employeeNum: employeeData.employeeNum,
+            firstName: employeeData.firstName,
+            last_name: employeeData.last_name,
+            email: employeeData.email,
+            SSN: employeeData.SSN,
+            addressStreet: employeeData.addressStreet,
+            addresCity: employeeData.addresCity,
+            addressState: employeeData.addressState,
+            addressPostal: employeeData.addressPostal,
+            maritalStatus: employeeData.maritalStatus,
+            isManager: employeeData.isManager,
+            employeeManagerNum: employeeData.employeeManagerNum,
+            status: employeeData.status,
+            department: employeeData.department,
+            hireDate: employeeData.hireDate
+        })
+            .then(function (data) {
+                resolve(data);
+            })
+            .catch(function (err) {
+                reject("unable to create employee");
+            });
+    });
 }
 
 module.exports.updateEmployee = function (employeeData) {
-    return new Promise((resolve, reject) => {
-        for (var i = 0; i < employees.length; i++) {
-            if (employees[i].employeeNum  == employeeData.employeeNum) {
-                employees[i] = employeeData;
-                break;
-            }      
+    employeeData.isManager = (employeeData.isManager) ? true : false;
+
+    return new Promise(function (resolve, reject) {
+        for (var prop in employeeData) {
+            if (employeeData[prop] == "") {
+                employeeData[prop] = null;
+            }
         }
-        resolve();       
+        Employee.update({
+            employeeNum: employeeData.employeeNum,
+            firstName: employeeData.firstName,
+            last_name: employeeData.last_name,
+            email: employeeData.email,
+            SSN: employeeData.SSN,
+            addressStreet: employeeData.addressStreet,
+            addresCity: employeeData.addresCity,
+            addressState: employeeData.addressState,
+            addressPostal: employeeData.addressPostal,
+            maritalStatus: employeeData.maritalStatus,
+            isManager: employeeData.isManager,
+            employeeManagerNum: employeeData.employeeManagerNum,
+            status: employeeData.status,
+            department: employeeData.department,
+            hireDate: employeeData.hireDate
+        })
+            .then(function (data) {
+                resolve(data);
+            })
+            .catch(function (err) {
+                reject("unable to create employee");
+            });
     });
-} 
+}
+
+module.exports.addDepartment = function (departmentData) {
+    return new Promise(function (resolve, reject) {
+        for (var prop in departmentData) {
+            if (departmentData[prop] == "") {
+                departmentData[prop] = null;
+            }
+        }
+        Department.create({
+            departmentId: departmentData.departmentId,
+            departmentName: departmentData.departmentName
+        })
+        .then(function (data) {
+            resolve(data);
+        })
+        .catch(function (err) {
+            reject("unable to create department");
+        });
+    });
+}
+
+module.exports.updateDepartment = function (departmentData) {
+    return new Promise(function (resolve, reject) {
+        for (var prop in departmentData) {
+            if (departmentData[prop] == "") {
+                departmentData[prop] = null;
+            }
+        }
+        Department.update({
+            departmentId: departmentData.departmentId,
+            departmentName: departmentData.departmentName
+        })
+            .then(function (data) {
+                resolve(data);
+            })
+            .catch(function (err) {
+                reject("unable to create department");
+            });
+    });
+}
+
+module.exports.getDepartmentById = function (id) {
+    return new Promise(function (resolve, reject) {
+        Department.findAll({
+            where: { departmentId: id }
+        }).then(function (data) {
+            resolve(data[0]);
+        }).catch(function (err) {
+            reject("no results returned");
+        });
+    });
+}
+
+module.exports.deleteEmployeeByNum = function (empNum) {
+    return new Promise(function (resolve, reject) {
+        Employee.destroy({
+            where: { employeeNum: empNum }
+        }).then(function () {
+            resolve();
+        })
+        .catch(function (err) {
+            reject("unable to delete employee");
+        });
+    });
+}

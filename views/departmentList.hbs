@@ -1,6 +1,6 @@
 <div class="row">
     <div class="col-md-12">
-       <h1>{{title}}<h1>
+       <h1>{{title}}<a href="/departments/add" class="btn btn-success pull-right" style="margin-top:5px;">Add New Department</a><h1> 
        <hr /> 
     </div>
 </div> 
@@ -17,8 +17,8 @@
             <tbody>
                 {{#each data}}
                     <tr>
-                        <td><a href="/employees?department=1"> {{departmentId}} </a></td>
-                        <td><a href="/employees?department=1"> {{departmentName}}</a></td>
+                        <td><a href="/department/{{departmentId}}">{{departmentId}}</a></td> 
+                        <td><a href="/employees?department={{departmentName}}">{{departmentName}}</a></td>
                     </tr>
                 {{/each}}
             </tbody>

@@ -88,15 +88,15 @@
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label for="department">Department</label>
-                                <select class="form-control" name="department" id="department">
-                                    <option value="1">1</option>
-                                    <option value="2">2</option>
-                                    <option value="3">3</option>
-                                    <option value="4">4</option>
-                                    <option value="5">5</option>
-                                    <option value="6">6</option>
-                                    <option value="7">7</option>
-                            </select>
+                                {{#if departments}}  
+                                    <select class="form-control" name="department" id="department">  
+                                    {{#each departments}} 
+                                            <option value="{{departmentId}}">{{departmentName}}</option>
+                                    {{/each}}
+                                </select> 
+                                {{else}}
+                                    <div>No Departments</div>
+                                {{/if}} 
                             </div>
                         </div>
                     </div>
