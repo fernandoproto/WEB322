@@ -113,12 +113,13 @@ app.get("/employee/:empNum", (req, res) => {
 });
 
 app.get("/employees/add", (req, res) => {
-    dataService.getDepartments().then(() => {
+    dataService.getDepartments().then((data) => {
         res.render("addEmployee", { departments: data });
     }).catch((errorMessage) => {
         res.render("addEmployee", { departments: [] });
     });
 });
+
 
 app.post("/employees/add", (req, res) => {
     console.log(req.body);
@@ -126,6 +127,7 @@ app.post("/employees/add", (req, res) => {
         res.redirect("/employees");
     });
 });
+
 
 app.get("/employee/delete/:empNum", (req, res) => {
     dataService.deleteEmployeeByNum(req.params.empNum).then(() => {
@@ -140,6 +142,13 @@ app.post("/employee/update", (req, res) => {
     console.log(req.body);
     dataService.updateEmployee(req.body).then(() => {
         res.redirect("/employees");
+    });
+});
+
+app.post("/department/update", (req, res) => {
+    console.log(req.body);
+    dataService.updateDepartment(req.body).then(() => {
+        res.redirect("/departments");
     });
 });
 

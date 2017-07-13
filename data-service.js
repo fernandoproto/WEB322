@@ -44,9 +44,7 @@ module.exports.initialize = function () {
         sequelize.sync().then(function (Employee) {
             console.log('Connection has been established successfully.');
             resolve();
-        }).then(function (Department) {
-            console.log('Connection has been established successfully.');
-            resolve();
+
         }).catch(function (err) {
             reject("unable to sync the database");
         });
@@ -139,33 +137,16 @@ module.exports.getDepartments = function () {
 }
 
 module.exports.addEmployee = function (employeeData) {
-    employeeData.isManager = (employeeData.isManager) ? true : false;
-
     return new Promise(function (resolve, reject) {
+        employeeData.isManager = (employeeData.isManager) ? true : false;
         for (var prop in employeeData) {
             if (employeeData[prop] == "") {
                 employeeData[prop] = null;
             }
         }
-        Employee.create({
-            employeeNum: employeeData.employeeNum,
-            firstName: employeeData.firstName,
-            last_name: employeeData.last_name,
-            email: employeeData.email,
-            SSN: employeeData.SSN,
-            addressStreet: employeeData.addressStreet,
-            addresCity: employeeData.addresCity,
-            addressState: employeeData.addressState,
-            addressPostal: employeeData.addressPostal,
-            maritalStatus: employeeData.maritalStatus,
-            isManager: employeeData.isManager,
-            employeeManagerNum: employeeData.employeeManagerNum,
-            status: employeeData.status,
-            department: employeeData.department,
-            hireDate: employeeData.hireDate
-        })
-            .then(function (data) {
-                resolve(data);
+        Employee.create(employeeData)
+            .then(function () {
+                resolve();
             })
             .catch(function (err) {
                 reject("unable to create employee");
@@ -174,33 +155,18 @@ module.exports.addEmployee = function (employeeData) {
 }
 
 module.exports.updateEmployee = function (employeeData) {
-    employeeData.isManager = (employeeData.isManager) ? true : false;
-
     return new Promise(function (resolve, reject) {
+        employeeData.isManager = (employeeData.isManager) ? true : false;
         for (var prop in employeeData) {
             if (employeeData[prop] == "") {
                 employeeData[prop] = null;
             }
         }
-        Employee.update({
-            employeeNum: employeeData.employeeNum,
-            firstName: employeeData.firstName,
-            last_name: employeeData.last_name,
-            email: employeeData.email,
-            SSN: employeeData.SSN,
-            addressStreet: employeeData.addressStreet,
-            addresCity: employeeData.addresCity,
-            addressState: employeeData.addressState,
-            addressPostal: employeeData.addressPostal,
-            maritalStatus: employeeData.maritalStatus,
-            isManager: employeeData.isManager,
-            employeeManagerNum: employeeData.employeeManagerNum,
-            status: employeeData.status,
-            department: employeeData.department,
-            hireDate: employeeData.hireDate
+        Employee.update(employeeData, {
+            where: { employeeNum: employeeData.employeeNum } 
         })
-            .then(function (data) {
-                resolve(data);
+            .then(function () {
+                resolve();
             })
             .catch(function (err) {
                 reject("unable to create employee");
@@ -215,12 +181,9 @@ module.exports.addDepartment = function (departmentData) {
                 departmentData[prop] = null;
             }
         }
-        Department.create({
-            departmentId: departmentData.departmentId,
-            departmentName: departmentData.departmentName
-        })
-        .then(function (data) {
-            resolve(data);
+        Department.create(departmentData)
+        .then(function () {
+            resolve();
         })
         .catch(function (err) {
             reject("unable to create department");
@@ -235,12 +198,11 @@ module.exports.updateDepartment = function (departmentData) {
                 departmentData[prop] = null;
             }
         }
-        Department.update({
-            departmentId: departmentData.departmentId,
-            departmentName: departmentData.departmentName
+        Department.update(departmentData, {
+            where: { departmentId: departmentData.departmentId } 
         })
-            .then(function (data) {
-                resolve(data);
+            .then(function () {
+                resolve();
             })
             .catch(function (err) {
                 reject("unable to create department");
