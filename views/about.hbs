@@ -13,3 +13,107 @@
 		</article>
 	</section>
 </div>
+<div class="row">
+	<div class="col-md-12">
+		<h3>Leave a Comment</h3>
+		<form action="/about/addComment" method="POST">
+			<div class="well">
+				<div class="row">
+					<div class="col-md-6">
+						<input name="authorName" class="form-control" type="text" placeholder="Name">
+						<br>
+					</div>
+					<div class="col-md-6">
+						<input name="authorEmail" class="form-control" type="email" placeholder="Email">
+						<br>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-12">
+						<input name="subject" class="form-control" type="text" placeholder="Subject">
+						<br>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-12">
+						<textarea name="commentText" class="form-control" placeholder="Comment" rows="8"></textarea>
+						<br>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-2 col-md-offset-10">
+						<button class="btn btn-primary form-control" type="submit">Comment</button>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+{{#if data}}
+<div class="row">
+	<div class="col-md-12">
+		<h3>All Comments</h3>
+		<hr /> </div>
+</div>
+{{/if}} 
+{{#each data}}
+<div class="row">
+	<div class="col-md-12">
+		<h4>Comment {{counter @index}}</h4>
+		<div class="well">
+			<div class="row">
+				<div class="col-md-12">
+					{{commentText}}<br><br>Posted on: {{postedDate}} by <a href="mailto:{{authorEmail}}">{{authorName}}</a>
+					<br><br>
+				</div>
+			</div>
+			{{#each this}}
+				 {{#each replies}}
+				<div class="row">
+					<div class="col-md-12">
+						<div class="row">
+							<div class="col-md-12">
+								<div class="well">{{commentText}}<br><br>Posted on: {{repliedDate}} by <a href="mailto:{{authorEmail}}">{{authorName}}</a></div>
+							</div>
+						</div>
+					</div>
+				</div>
+				{{/each}}
+			{{/each}}
+			<div class="row">
+				<div class="col-md-12"> <button class="btn btn-primary btn-sm pull-right" data-toggle="collapse" data-target="#reply-{{_id}}" aria-expanded="false">Reply</button></div>
+			</div>
+		</div>
+		<div class="collapse" id="reply-{{_id}}">
+			<div class="well">
+				<div class="row">
+					<form action="/about/addReply" method="POST">
+						<div class="row">
+							<div class="col-md-6">
+								<input name="authorName" class="form-control" type="text" placeholder="Name">
+								<br>
+							</div>
+							<div class="col-md-6">
+								<input name="authorEmail" class="form-control" type="email" placeholder="Email">
+								<br>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-12">
+								<textarea name="commentText" class="form-control" placeholder="Comment" rows="8"></textarea>
+								<br>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-2 col-md-offset-10">
+								<input name="comment_id" type="hidden" value={{_id}}>
+								<button class="btn btn-primary form-control" type="submit">Reply</button>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{{/each}}

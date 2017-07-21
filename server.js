@@ -1,14 +1,18 @@
 /*********************************************************************************
-*		WEB322	– Assignment 05
+*		WEB322	– Assignment 06
 *		I	declare	that	this	assignment	is	my	own	work	in	accordance	with	Seneca		Academic	Policy.		No	part	
 *		of	this	assignment	has	been	copied	manually	or	electronically	from	any	other	source	
 *		(including	3rd	party	web	sites)	or	distributed	to	other	students.
 *	
-*		Name:	Fernando Henrique Zavalloni Proto	Student	ID:	128133154	Date:	07/Jul/17
+*		Name:	Fernando Henrique Zavalloni Proto	Student	ID:	128133154	Date:	21/Jul/17
 *
 *		Online	(Heroku)	Link:	https://blooming-brushlands-58927.herokuapp.com/
 *
 ********************************************************************************/
+
+
+
+const dataServiceComments = require("./data-service-comments.js");
 const dataService = require("./data-service.js");
 const express = require("express");
 const app = express();
@@ -34,6 +38,9 @@ app.engine(".hbs", exphbs({
             } else {
                 return options.fn(this);
             }
+        },
+        counter: function (index){
+            return index+1;
         }
     }
 }));
@@ -48,8 +55,42 @@ app.get("/", function (req, res) {
 })
 
 app.get("/about", function (req, res) {
-    res.render("about");
-})
+    console.log(req.body);
+    dataServiceComments.getAllComments().then((dataFromPromise) => {
+        console.log(dataFromPromise);
+        res.render("about", { data: dataFromPromise });
+    }).catch((err) => {
+        if (err) {
+            console.log(err);
+            res.render("about");
+        }
+    });
+});
+
+app.post("/about/addComment", (req, res) => {
+    console.log(req.body);
+    dataServiceComments.addComment(req.body).then(() => {
+        res.redirect("/about");
+    }).catch((err) => {
+        if (err) {
+            console.log(err);
+            res.redirect("/about");
+        }
+    });
+});
+
+app.post("/about/addReply", (req, res) => {
+    console.log(req.body);
+    dataServiceComments.addReply(req.body).then(() => {
+        console.log(req.body);
+        res.redirect("/about");
+    }).catch((err) => {
+        if (err) {
+            console.log(err);
+            res.redirect("/about");
+        }
+    });
+});
 
 
 app.get("/employees", (req, res) => {
@@ -188,15 +229,62 @@ app.get("/department/:departmentId", (req, res) => {
     });
 });
 
+app.post("/about/addComment", (req, res) => {
+    console.log(req.body);
+    dataServiceComments.addComment(req.body).then(() => {
+        res.redirect("/about");
+    }).catch((err) => {
+        if (err) {
+            console.log(err);
+            res.redirect("/about");
+        }
+    });
+});
+
+app.post("/about/addReply", (req, res) => {
+    console.log(req.body);
+    dataServiceComments.addReply(req.body).then(() => {
+        res.redirect("/about");
+    }).catch((err) => {
+        if (err) {
+            console.log(err);
+            res.redirect("/about");
+        }
+    });
+});
 
 app.use((req, res) => {
     res.status(404).send("Page Not Found");
 });
 
 
-dataService.initialize().then(() => {
-    app.listen(HTTP_PORT, onHttpStart);
-}).catch((err) => {
-    console.log("error: " + err);
-});
+dataService.initialize()
+    .then(dataServiceComments.initialize())
+    .then(() => {
+        app.listen(HTTP_PORT, onHttpStart);
+    }).catch((err) => {
+        console.log("error: " + err);
+    });
 
+/*dataServiceComments.initialize().then(() => { 
+    dataServiceComments.addComment({ 
+        authorName: "Comment 1 Author", 
+        authorEmail: "comment1@mail.com", 
+        subject: "Comment 1", 
+        commentText: "Comment Text 1" 
+    }).then((id) => { 
+        dataServiceComments.addReply({ 
+            comment_id: id,
+            authorName: "Reply 1 Author",
+            authorEmail: "reply1@mail.com",
+            commentText: "Reply Text 1" 
+        }).then(dataServiceComments.getAllComments)
+        .then((data) => { 
+            console.log("comment: " + data[data.length - 1]); process.exit();
+        }); 
+    }); 
+}).catch((err) => {
+    console.log("Error: " + err); 
+    process.exit();
+});
+*/
