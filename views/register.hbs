@@ -1,0 +1,46 @@
+<div class="row">
+    <div class="col-md-12">
+        <h1>Register User</h1>
+        <hr />
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6 col-md-offset-3">
+        {{#if errorMessage}}
+        <div class="alert alert-danger"> <strong>Error:</strong> {{errorMessage}}</div>
+        {{/if}} {{#if successMessage}}
+        <div class="alert alert-success"> <strong>Success:</strong> {{successMessage}}</div><a class="btn btn-success pull-right" href="/login">&nbsp;&nbsp;&nbsp;Proceed to Log in&nbsp;&nbsp;&nbsp;</a><br
+        /><br /><br /> {{/if}} {{#unless successMessage}}
+        <div class="well">
+            <form action="/register" method="POST">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <input class="form-control" id="user" name="user" type="text" placeholder="User Name" required value="" />
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <input class="form-control" id="password" name="password" type="password" placeholder="Password" required />
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <input class="form-control" id="password2" name="password2" type="password" placeholder="Confirm Password" required />
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <button type="submit" class="btn btn-primary pull-right">&nbsp;&nbsp;&nbsp;Register&nbsp;&nbsp;&nbsp;</button><br/><br/>
+                    </div>
+                </div>
+            </form>
+        </div>
+        {{/unless}}
+    </div>
+</div>
