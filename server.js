@@ -1,10 +1,10 @@
 /*********************************************************************************
-*		WEB322	– Assignment 07
+*		WEB322	– Assignment 08
 *		I	declare	that	this	assignment	is	my	own	work	in	accordance	with	Seneca		Academic	Policy.		No	part	
 *		of	this	assignment	has	been	copied	manually	or	electronically	from	any	other	source	
 *		(including	3rd	party	web	sites)	or	distributed	to	other	students.
 *	
-*		Name:	Fernando Henrique Zavalloni Proto	Student	ID:	128133154	Date:	27/Jul/17
+*		Name:	Fernando Henrique Zavalloni Proto	Student	ID:	128133154	Date:	11/Ago/17
 *
 *		Online	(Heroku)	Link:	https://blooming-brushlands-58927.herokuapp.com/
 *
@@ -26,6 +26,7 @@ var HTTP_PORT = process.env.PORT || 8081;
 
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 
 app.use(clientSessions({
   cookieName: "session", // this is the object name that will be added to 'req'
@@ -307,6 +308,24 @@ app.get("/logout", (req, res) =>{
     req.session.reset();
     res.redirect("/");
 })
+
+app.post("/api/updatePassword" , (req, res) =>{
+    console.log(req.body);
+    dataServiceAuth.checkUser({ user: req.body.user, password: req.body.currentPassword })
+    .then(() => {
+        dataServiceAuth.updatePassword(req.body)
+        .then(() => {
+            res.json({successMessage: "Password changed successfully for user: " + req.body.user });
+        })
+        .catch((err)=>{
+            res.json({errorMessage: err});
+        });
+    })
+    .catch((err)=>{
+         res.json({errorMessage: err});
+    })
+})
+
 
 app.use((req, res) => {
     res.status(404).send("Page Not Found");
