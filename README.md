@@ -1,6 +1,6 @@
-# WEB322
+# WEB322 App
 
-Application developed in WEB322 Course.
+Application developed in WEB322 Course at Seneca College.
 
 Languages and Technologies used: 
   * Javascript
@@ -12,4 +12,4 @@ Languages and Technologies used:
   * HTML
   * CSS
   
- App is hosted at https://blooming-brushlands-58927.herokuapp.com/
+ URL: https://blooming-brushlands-58927.herokuapp.com/
